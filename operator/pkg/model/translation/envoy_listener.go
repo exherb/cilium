@@ -934,7 +934,10 @@ func toTransportSocket(ciliumSecretNamespace string, tls []model.TLSSecret, fron
 	commonTLSContext := &envoy_extensions_transport_sockets_tls_v3.CommonTlsContext{
 		TlsCertificateSdsSecretConfigs: tlsSdsConfig,
 		SessionTicketKeysSdsSecretConfig: &envoy_extensions_transport_sockets_tls_v3.SdsSecretConfig{
-			Name: "session_ticket_keys",
+			Name: syncnames.SyncedSDSSecretName(ciliumSecretNamespace, types.NamespacedName{
+				Namespace: "kube-system",
+				Name:      "cilium-gateway-session-tickets",
+			}),
 		},
 	}
 	if tlsOptions.MinVersion != "" || tlsOptions.MaxVersion != "" {
